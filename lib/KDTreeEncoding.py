@@ -1,5 +1,9 @@
 from numpy import *
 from numpy.random import choice
+
+# setting up random seed
+random.seed(123)
+
 class KD_tree:
     """A class that represents the whole KDtree,
     Points to the root KD_node"""

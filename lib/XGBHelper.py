@@ -6,6 +6,7 @@ from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
 from numpy.random import choice
 from lib.XGBoost_params import *
+import lightgbm as lgb
 
 def to_DMatrix(subData):
         """Transform matrix into xgb.DMatrix"""
@@ -14,6 +15,15 @@ def to_DMatrix(subData):
         DMatrix = xgb.DMatrix(X, label=y)
         return DMatrix
 
+def to_DMatrix_LGB(subData):
+        """Transform matrix into xgb.DMatrix"""
+        X=subData[:,:-1]
+        y= np.array(subData[:, -1], dtype=int)
+        DMatrix = lgb.Dataset(X, label=y)
+        return DMatrix
+
+
+    
 class DataSplitter:
     """ A class for handling splitting and resampling of labeled exampels """
     def __init__(self,data):
@@ -45,16 +55,21 @@ class DataSplitter:
         return sample
 
 
-def simple_bootstrap(Train,Test,param,ensemble_size=2,normalize=True):
+def simple_bootstrap(model,Train,Test,param,ensemble_size=2,normalize=True):
     
-    dtest=to_DMatrix(Test)  # test set is kept fixed
+    
+    dtest=to_DMatrix(Test)   # test set is kept fixed
     y_test = array(Test[:,-1],dtype=int8)
     DStrain=DataSplitter(Train)
     log=[]
     for i in range(ensemble_size):  #iterate over randomized training of the classifier        
         boot_train=DStrain.bootstrap_sample()
-        dtrain = to_DMatrix(boot_train)
-        bst,_ = run_xgboost(dtrain,dtest,param)
+        if model == 'xgb':
+            dtrain = to_DMatrix(boot_train)
+            bst,_ = run_xgboost(dtrain,dtest,param)
+        elif model == 'lgb':
+            dtrain = to_DMatrix_LGB(boot_train)
+            bst,_ = run_lgboost(dtrain,dtest,param)
         y_pred = bst.predict(dtest,output_margin=True)
         log.append({
             'i':i,
@@ -92,6 +107,19 @@ def run_xgboost(dtrain,dtest,param):
                 verbose_eval=False, evals_result=evals_result)
 
     return bst,evals_result
+
+def run_lgboost(dtrain,dtest,param):
+    evallist = [(dtrain, 'train'), (dtest, 'eval')]
+    evals_result={}
+    num_round=param['num_round']
+    cparam=param.copy()
+    cparam.pop('num_round')
+    
+    bst=lgb.train(param_D2L(cparam), dtrain, num_round, evallist,\
+                verbose_eval=False, evals_result=evals_result)
+
+    return bst,evals_result
+
 
 
 
