@@ -119,7 +119,7 @@ class encoded_dataset:
   
         self.df=df
         self.rows=df.shape[0]
-        self.cols=2**(depth+1)+1
+        self.cols=2**(depth+1)+1 + 2
         data=zeros([self.rows,self.cols]) #code length +1 for label
 
         j=0
@@ -132,7 +132,11 @@ class encoded_dataset:
                 V[bin2int(c)]=a
 
             label=row[label_col]*1
-
+            nl_mean = row['nl_mean']
+            #wealthp = row['wealthpooled']
+            urban = float(row['urban'])
+            data[j,-3] = nl_mean
+            data[j,-2] = urban
             data[j,-1]=label
             data[j,:-1]=V
 
