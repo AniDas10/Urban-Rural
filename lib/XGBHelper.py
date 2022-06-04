@@ -103,9 +103,13 @@ def run_xgboost(dtrain,dtest,param):
     cparam=param.copy()
     cparam.pop('num_round')
     
+    #bst=xgb.train(param_D2L(cparam), dtrain, num_round, evallist,\
+    #            verbose_eval=False, evals_result=evals_result)
     bst=xgb.train(param_D2L(cparam), dtrain, num_round, evallist,\
-                verbose_eval=False, evals_result=evals_result)
+                verbose_eval=param['verbose_eval'], evals_result=evals_result, feval = param['custom_metric'])
 
+
+    
     return bst,evals_result
 
 def run_lgboost(dtrain,dtest,param):
