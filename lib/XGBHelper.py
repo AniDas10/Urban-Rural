@@ -6,7 +6,7 @@ from sklearn.metrics import roc_curve
 from sklearn.model_selection import train_test_split
 from numpy.random import choice
 from lib.XGBoost_params import *
-import lightgbm as lgb
+#import lightgbm as lgb
 
 def to_DMatrix(subData):
         """Transform matrix into xgb.DMatrix"""
