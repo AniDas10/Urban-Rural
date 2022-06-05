@@ -21,7 +21,7 @@ We have also included more parameters to tune in our XGBoost model such as featu
 
 
 ### Using better split ratios between train and validation sets
-We tried different combinations to test which ratio works the best, currently we have decided to proceed with 50% split, but we shall increase our training size (using either a different split ratio or adding the augmented images) in future iterations/submissions so that the model can learn better.
+We tried different combinations to test which ratio works the best, currently we have decided to proceed with 65-35% split between train and validation dataset, but we shall increase our training size (using either a different split ratio or adding the augmented images) in future iterations/submissions so that the model can learn better.
 
 
 ### Setting custom thresholds 
