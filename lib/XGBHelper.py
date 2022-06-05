@@ -75,7 +75,9 @@ def simple_bootstrap(model,Train,Test,param,ensemble_size=2,normalize=True):
             'i':i,
             'bst':bst,
             'y_pred': y_pred,
-            'y_test':y_test
+            'y_test':y_test,
+            'dtrain':dtrain
+            
         })
         print('iter %d'%i,end='\r')
     return log
