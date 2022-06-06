@@ -108,7 +108,7 @@ def encode_image(file,tree):
 
 class encoded_dataset:
 
-    def __init__(self,image_dir,df,tree,depth=8,label_col='rich'):
+    def __init__(self,image_dir,df,tree,depth=8,label_col='rich', include_country=True):
 
         def bin2int(c):
             ans=0
@@ -126,20 +126,19 @@ class encoded_dataset:
         for filename,row in df.iterrows():
             filepath=f"{image_dir}/{filename}"
             code = encode_image(filepath,tree)
-
+            
             V=zeros(self.cols-1)
             for c,a in code:
                 V[bin2int(c)]=a
             label=row[label_col]*1
             nl_mean = row['nl_mean']
-            country = row['country']
-            #wealthp = row['wealthpooled']
-            #urban = float(row['urban'])
-            data[j,-3] = nl_mean
-            data[j,-2] = country
-            data[j,-1]=label
+         
             data[j,:-1]=V
-
+            data[j,-3] = nl_mean
+            if include_country:
+                country = row['country']
+                data[j,-2] = country
+            data[j,-1]=label
             if((j+1) %10==0):
                 print(j,filename,end='\r')
             j+=1
